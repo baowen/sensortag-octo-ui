@@ -31,3 +31,10 @@
     transform: rotate(360deg);
   }
 }
+
+.Theme-light {
+  background-color: #aaa;
+}
+.Theme-dark {
+  background-color: #282c34;
+}

@@ -11,6 +11,9 @@ function App() {
   const [accelerometerX, setAccelerometerX] = useState(null);
   const [accelerometerY, setAccelerometerY] = useState(null);
   const [accelerometerZ, setAccelerometerZ] = useState(null);
+  const [gyroscopeX, setGyroscopeX] = useState(null);
+  const [gyroscopeY, setGyroscopeY] = useState(null);
+  const [gyroscopeZ, setGyroscopeZ] = useState(null);
 
   useEffect(() => {
     if (connected) {
@@ -47,6 +50,14 @@ function App() {
     });
   }, [accelerometerX, accelerometerY, accelerometerZ]); //only re-run the effect if new message comes in
 
+  useEffect(() => {
+    socket.on('GYROSCOPE_CHANGE', payload => {
+      setGyroscopeX(payload.x);
+      setGyroscopeY(payload.y);
+      setGyroscopeZ(payload.z);
+    });
+  }, [gyroscopeX, gyroscopeY, gyroscopeZ]); //only re-run the effect if new message comes in
+
   function displayConnectedMessage() {
     const connectedMessage = 'You have connected to the socket';
     if (connected) {
@@ -67,7 +78,11 @@ function App() {
           {displayConnectedMessage()}
         </p>
         <p>
-          {accelerometerX}, {accelerometerY}, {accelerometerZ}
+          Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
+          {accelerometerZ}
+        </p>
+        <p>
+          Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
         </p>
         <a
           className="App-link"

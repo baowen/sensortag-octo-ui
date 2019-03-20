@@ -7,6 +7,10 @@ const socket = io('http://localhost:3000');
 
 function App() {
   const [connected, setConnection] = useState(false);
+  const [sensorId, setSensorId] = useState('');
+  const [accelerometerX, setAccelerometerX] = useState(null);
+  const [accelerometerY, setAccelerometerY] = useState(null);
+  const [accelerometerZ, setAccelerometerZ] = useState(null);
 
   useEffect(() => {
     if (connected) {
@@ -21,6 +25,27 @@ function App() {
       }
     };
   });
+
+  useEffect(() => {
+    //waits for a button press to set sensorId
+    socket.on('BUTTON_PRESS', payload => {
+      setSensorId(payload);
+    });
+    //clean up code
+    return () => {
+      if (sensorId !== '') {
+        socket.close();
+      }
+    };
+  }, [sensorId]); //only re-run the effect if new message comes in
+
+  useEffect(() => {
+    socket.on('ACCELEROMETER_CHANGE', payload => {
+      setAccelerometerX(payload.x);
+      setAccelerometerY(payload.y);
+      setAccelerometerZ(payload.z);
+    });
+  }, [accelerometerX, accelerometerY, accelerometerZ]); //only re-run the effect if new message comes in
 
   function displayConnectedMessage() {
     const connectedMessage = 'You have connected to the socket';
@@ -41,6 +66,9 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
           {displayConnectedMessage()}
         </p>
+        <p>
+          {accelerometerX}, {accelerometerY}, {accelerometerZ}
+        </p>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -49,6 +77,8 @@ function App() {
         >
           Learn React
         </a>
+        <p>{sensorId}</p>
+
         <button onClick={() => handleConnection()}>
           {connected && `End Connection`}
           {!connected && `Start Connection`}

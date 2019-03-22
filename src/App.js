@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import bluecar from './BlueCar.png';
+
 import './App.css';
 
 const io = require('socket.io-client');
@@ -8,12 +9,40 @@ const socket = io('http://localhost:3000');
 function App() {
   const [connected, setConnection] = useState(false);
   const [sensorId, setSensorId] = useState('');
-  const [accelerometerX, setAccelerometerX] = useState(null);
-  const [accelerometerY, setAccelerometerY] = useState(null);
-  const [accelerometerZ, setAccelerometerZ] = useState(null);
-  const [gyroscopeX, setGyroscopeX] = useState(null);
-  const [gyroscopeY, setGyroscopeY] = useState(null);
-  const [gyroscopeZ, setGyroscopeZ] = useState(null);
+  const [accelerometerX, setAccelerometerX] = useState(0);
+  const [accelerometerY, setAccelerometerY] = useState(0);
+  const [accelerometerZ, setAccelerometerZ] = useState(0);
+  const [gyroscopeX, setGyroscopeX] = useState(0);
+  const [gyroscopeY, setGyroscopeY] = useState(0);
+  const [gyroscopeZ, setGyroscopeZ] = useState(0);
+  const [elapsed, setTime] = useState(0);
+  const [initialTime] = useState(Date.now);
+
+  /**
+   * Returns the combined acceleration sqrt(x^2 + y^2 + z^2).
+   *
+   * @return the acceleration of all three axes combined
+   */
+  function getCombinedAccelleration(x, y, z) {
+    return Math.sqrt(x * x + y * y + z * z).toFixed(2);
+  }
+
+  //distance = (0.5 * acceleration) * (time * time)
+  function calculateDistanceByAccelleration(acceleration) {
+    var elapsedSeconds = Math.floor(elapsed / 1000);
+    var meters = (
+      0.5 *
+      acceleration *
+      (elapsedSeconds * elapsedSeconds)
+    ).toFixed(2);
+    function metersToMiles(meters) {
+      //mi =m * 0.00062137
+      return ((meters * 0.00062137) / 60).toFixed(2);
+    }
+    //console.log('Initial: ' + initialTime + ' ' + elapsed);
+    //return metersToMiles(meters);
+    return meters;
+  }
 
   useEffect(() => {
     if (connected) {
@@ -28,6 +57,10 @@ function App() {
       }
     };
   });
+  useEffect(() => {
+    //waits for a button press to set sensorId
+    setTime(Date.now() - initialTime);
+  }); //only re-run the effect if new message comes in
 
   useEffect(() => {
     //waits for a button press to set sensorId
@@ -69,14 +102,29 @@ function App() {
     connected ? setConnection(false) : setConnection(true);
   };
 
+  function moveCar(acceleration) {}
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-          {displayConnectedMessage()}
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'center' }} />
+        <img
+          src={bluecar}
+          style={{
+            width: '15%',
+            height: '15%',
+            marginLeft: moveCar(
+              getCombinedAccelleration(
+                accelerometerX,
+                accelerometerY,
+                accelerometerZ
+              )
+            ),
+          }}
+          className="App-logo"
+          alt="logo"
+        />
+        <p>{displayConnectedMessage()}</p>
         <p>
           Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
           {accelerometerZ}
@@ -84,14 +132,26 @@ function App() {
         <p>
           Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>
+          Combined Acceleration:
+          {getCombinedAccelleration(
+            accelerometerX,
+            accelerometerY,
+            accelerometerZ
+          )}
+        </p>
+        <p>
+          Distance Travelled:
+          {calculateDistanceByAccelleration(
+            getCombinedAccelleration(
+              accelerometerX,
+              accelerometerY,
+              accelerometerZ
+            )
+          )}
+          m/h
+        </p>
+
         <p>{sensorId}</p>
 
         <button onClick={() => handleConnection()}>

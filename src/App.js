@@ -20,6 +20,8 @@ function App() {
   const [combinedAccelleration, setCombinedAccelleration] = useState(0);
   const [objectTemp, setObjectTemp] = useState(0);
   const [ambientTemp, setAmbientTemp] = useState(0);
+  const [temperature, setTemperature] = useState(0);
+  const [humidity, setHumidity] = useState(0);
 
   /**
    * Returns the combined acceleration sqrt(x^2 + y^2 + z^2).
@@ -91,6 +93,13 @@ function App() {
     });
   }, [objectTemp, ambientTemp]); //only re-run the effect if new message comes in
 
+  useEffect(() => {
+    socket.on('HUMIDITY_CHANGE', payload => {
+      setTemperature(payload.temp);
+      setHumidity(payload.humidity);
+    });
+  }, [temperature, humidity]); //only re-run the effect if new message comes in
+
   function displayConnectedMessage() {
     const connectedMessage = 'You have connected to the socket';
     if (connected) {
@@ -130,7 +139,9 @@ function App() {
         <p>
           Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C
         </p>
-
+        <p>
+          Humidity - temp: {temperature}°C, humidity: {humidity}%
+        </p>
         <p>{sensorId}</p>
 
         <button onClick={() => handleConnection()}>

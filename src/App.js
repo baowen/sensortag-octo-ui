@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import bluecar from './BlueCar.png';
+import Gauge from 'react-svg-gauge';
 
 import './App.css';
 
@@ -20,20 +21,30 @@ function App() {
   const [magnetometerZ, setMagnetometerZ] = useState(0);
   const [elapsed, setTime] = useState(0);
   const [initialTime, setInitialTime] = useState(Date.now);
-  const [combinedAccelleration, setCombinedAccelleration] = useState(0);
+  const [combinedAcceleration, setCombinedAcceleration] = useState(0);
   const [objectTemp, setObjectTemp] = useState(0);
   const [ambientTemp, setAmbientTemp] = useState(0);
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
+
+  let r = Math.floor(combinedAcceleration * 25.5);
+  let g = Math.floor(255 - combinedAcceleration * 25.5);
+  let b = 0;
+  let colorHex = '#' + getHexColor(r) + getHexColor(g) + getHexColor(b);
+
+  function getHexColor(number) {
+    let string = number.toString(16);
+    return string.length === 1 ? '0' + string : string;
+  }
 
   /**
    * Returns the combined acceleration sqrt(x^2 + y^2 + z^2).
    *
    * @return the acceleration of all three axes combined
    */
-  function getCombinedAccelleration(x, y, z) {
-    var combinedAccelleration = Math.sqrt(x * x + y * y + z * z).toFixed(2);
-    return combinedAccelleration;
+  function getCombinedAcceleration(x, y, z) {
+    var combinedAcceleration = Math.sqrt(x * x + y * y + z * z).toFixed(2);
+    return combinedAcceleration;
   }
 
   useEffect(() => {
@@ -52,7 +63,7 @@ function App() {
   useEffect(() => {
     //waits for a button press to set sensorId
     setTime(Date.now() - initialTime);
-    if (combinedAccelleration == 0) {
+    if (combinedAcceleration == 0) {
       setInitialTime(Date.now);
     }
   }); //only re-run the effect if new message comes in
@@ -75,11 +86,11 @@ function App() {
       setAccelerometerX(payload.x);
       setAccelerometerY(payload.y);
       setAccelerometerZ(payload.z);
-      setCombinedAccelleration(
-        getCombinedAccelleration(payload.x, payload.y, payload.z)
+      setCombinedAcceleration(
+        getCombinedAcceleration(payload.x, payload.y, payload.z)
       );
     });
-  }, [accelerometerX, accelerometerY, accelerometerZ, combinedAccelleration]); //only re-run the effect if new message comes in
+  }, [accelerometerX, accelerometerY, accelerometerZ, combinedAcceleration]); //only re-run the effect if new message comes in
 
   useEffect(() => {
     socket.on('GYROSCOPE_CHANGE', payload => {
@@ -126,6 +137,16 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div style={{ display: 'flex', justifyContent: 'center' }} />
+        <div>
+          <Gauge
+            value={combinedAcceleration}
+            width={400}
+            height={320}
+            max={10}
+            color={colorHex}
+            label="Acceleration"
+          />
+        </div>
         <img
           src={bluecar}
           style={{
@@ -149,7 +170,7 @@ function App() {
         </p>
         <p>
           Combined Acceleration:
-          {combinedAccelleration}
+          {combinedAcceleration}
         </p>
         <p>
           Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C

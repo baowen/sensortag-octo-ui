@@ -16,7 +16,8 @@ function App() {
   const [gyroscopeY, setGyroscopeY] = useState(0);
   const [gyroscopeZ, setGyroscopeZ] = useState(0);
   const [elapsed, setTime] = useState(0);
-  const [initialTime] = useState(Date.now);
+  const [initialTime, setInitialTime] = useState(Date.now);
+  const [combinedAccelleration, setCombinedAccelleration] = useState(0);
 
   /**
    * Returns the combined acceleration sqrt(x^2 + y^2 + z^2).
@@ -24,24 +25,8 @@ function App() {
    * @return the acceleration of all three axes combined
    */
   function getCombinedAccelleration(x, y, z) {
-    return Math.sqrt(x * x + y * y + z * z).toFixed(2);
-  }
-
-  //distance = (0.5 * acceleration) * (time * time)
-  function calculateDistanceByAccelleration(acceleration) {
-    var elapsedSeconds = Math.floor(elapsed / 1000);
-    var meters = (
-      0.5 *
-      acceleration *
-      (elapsedSeconds * elapsedSeconds)
-    ).toFixed(2);
-    function metersToMiles(meters) {
-      //mi =m * 0.00062137
-      return ((meters * 0.00062137) / 60).toFixed(2);
-    }
-    //console.log('Initial: ' + initialTime + ' ' + elapsed);
-    //return metersToMiles(meters);
-    return meters;
+    var combinedAccelleration = Math.sqrt(x * x + y * y + z * z).toFixed(2);
+    return combinedAccelleration;
   }
 
   useEffect(() => {
@@ -60,6 +45,9 @@ function App() {
   useEffect(() => {
     //waits for a button press to set sensorId
     setTime(Date.now() - initialTime);
+    if (combinedAccelleration == 0) {
+      setInitialTime(Date.now);
+    }
   }); //only re-run the effect if new message comes in
 
   useEffect(() => {
@@ -80,8 +68,11 @@ function App() {
       setAccelerometerX(payload.x);
       setAccelerometerY(payload.y);
       setAccelerometerZ(payload.z);
+      setCombinedAccelleration(
+        getCombinedAccelleration(payload.x, payload.y, payload.z)
+      );
     });
-  }, [accelerometerX, accelerometerY, accelerometerZ]); //only re-run the effect if new message comes in
+  }, [accelerometerX, accelerometerY, accelerometerZ, combinedAccelleration]); //only re-run the effect if new message comes in
 
   useEffect(() => {
     socket.on('GYROSCOPE_CHANGE', payload => {
@@ -102,8 +93,6 @@ function App() {
     connected ? setConnection(false) : setConnection(true);
   };
 
-  function moveCar(acceleration) {}
-
   return (
     <div className="App">
       <header className="App-header">
@@ -113,13 +102,6 @@ function App() {
           style={{
             width: '15%',
             height: '15%',
-            marginLeft: moveCar(
-              getCombinedAccelleration(
-                accelerometerX,
-                accelerometerY,
-                accelerometerZ
-              )
-            ),
           }}
           className="App-logo"
           alt="logo"
@@ -134,22 +116,7 @@ function App() {
         </p>
         <p>
           Combined Acceleration:
-          {getCombinedAccelleration(
-            accelerometerX,
-            accelerometerY,
-            accelerometerZ
-          )}
-        </p>
-        <p>
-          Distance Travelled:
-          {calculateDistanceByAccelleration(
-            getCombinedAccelleration(
-              accelerometerX,
-              accelerometerY,
-              accelerometerZ
-            )
-          )}
-          m/h
+          {combinedAccelleration}
         </p>
 
         <p>{sensorId}</p>

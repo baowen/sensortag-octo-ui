@@ -15,6 +15,9 @@ function App() {
   const [gyroscopeX, setGyroscopeX] = useState(0);
   const [gyroscopeY, setGyroscopeY] = useState(0);
   const [gyroscopeZ, setGyroscopeZ] = useState(0);
+  const [magnetometerX, setMagnetometerX] = useState(0);
+  const [magnetometerY, setMagnetometerY] = useState(0);
+  const [magnetometerZ, setMagnetometerZ] = useState(0);
   const [elapsed, setTime] = useState(0);
   const [initialTime, setInitialTime] = useState(Date.now);
   const [combinedAccelleration, setCombinedAccelleration] = useState(0);
@@ -87,6 +90,14 @@ function App() {
   }, [gyroscopeX, gyroscopeY, gyroscopeZ]); //only re-run the effect if new message comes in
 
   useEffect(() => {
+    socket.on('MAGNETOMETER_CHANGE', payload => {
+      setMagnetometerX(payload.x);
+      setMagnetometerY(payload.y);
+      setMagnetometerZ(payload.z);
+    });
+  }, [magnetometerX, magnetometerY, magnetometerZ]); //only re-run the effect if new message comes in
+
+  useEffect(() => {
     socket.on('TEMPERATURE_CHANGE', payload => {
       setObjectTemp(payload.objectTemp);
       setAmbientTemp(payload.ambientTemp);
@@ -131,6 +142,10 @@ function App() {
         </p>
         <p>
           Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
+        </p>
+        <p>
+          Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
+          {magnetometerZ}
         </p>
         <p>
           Combined Acceleration:

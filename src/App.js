@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import bluecar from './BlueCar.png';
 import Gauge from 'react-svg-gauge';
 import Thermometer from 'react-thermometer-component';
-
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import './App.css';
 
 const io = require('socket.io-client');
@@ -135,60 +136,72 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div style={{ display: 'flex', justifyContent: 'center' }} />
-        <div>
-          <Gauge
-            value={combinedAcceleration}
-            width={400}
-            height={320}
-            max={10}
-            color={colorHex}
-            label="Acceleration"
-          />
-        </div>
-        <div>
-          <Thermometer
-            theme="dark"
-            value={objectTemp}
-            max="100"
-            steps="3"
-            format="°C"
-            size="large"
-            height="300"
-          />
-        </div>
-        <p>{displayConnectedMessage()}</p>
-        <p>
-          Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
-          {accelerometerZ}
-        </p>
-        <p>
-          Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
-        </p>
-        <p>
-          Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
-          {magnetometerZ}
-        </p>
-        <p>
-          Combined Acceleration:
-          {combinedAcceleration}
-        </p>
-        <p>
-          Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C
-        </p>
-        <p>
-          Humidity - temp: {temperature}°C, humidity: {humidity}%
-        </p>
-        <p>{sensorId}</p>
+    <React.Fragment>
+      <div className="App">
+        <header className="App-header">
+          <Container>
+            <Row>
+              <Col>
+                {' '}
+                <Gauge
+                  value={combinedAcceleration}
+                  width={400}
+                  height={320}
+                  max={10}
+                  color={colorHex}
+                  label="Acceleration"
+                />
+              </Col>
+              <Col>Humidity: {humidity}%</Col>
+              <Col>
+                {' '}
+                <Thermometer
+                  theme="dark"
+                  value={objectTemp}
+                  max="100"
+                  steps="3"
+                  format="°C"
+                  size="large"
+                  height="300"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>Event logs:</Col>
+              <Col>Speed:</Col>
+            </Row>
+          </Container>
 
-        <button onClick={() => handleConnection()}>
-          {connected && `End Connection`}
-          {!connected && `Start Connection`}
-        </button>
-      </header>
-    </div>
+          <p>{displayConnectedMessage()}</p>
+          <p>
+            Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
+            {accelerometerZ}
+          </p>
+          <p>
+            Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
+          </p>
+          <p>
+            Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
+            {magnetometerZ}
+          </p>
+          <p>
+            Combined Acceleration:
+            {combinedAcceleration}
+          </p>
+          <p>
+            Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C
+          </p>
+          <p>
+            Humidity - temp: {temperature}°C, humidity: {humidity}%
+          </p>
+          <p>{sensorId}</p>
+          <button onClick={() => handleConnection()}>
+            {connected && `End Connection`}
+            {!connected && `Start Connection`}
+          </button>
+        </header>
+      </div>
+    </React.Fragment>
   );
 }
 

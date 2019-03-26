@@ -153,26 +153,30 @@ function App() {
             <Row>
               <Col>
                 {' '}
-                <SafeAccelerationGauge
-                  value={acceleration}
-                  width={400}
-                  height={320}
-                  max={10}
-                  drivingConditions="poor"
-                />
+                <div className="Gauge">
+                  <SafeAccelerationGauge
+                    value={acceleration}
+                    width={400}
+                    height={320}
+                    max={10}
+                    drivingConditions="poor"
+                  />
+                </div>
               </Col>
               <Col>Humidity: {humidity}%</Col>
               <Col>
                 {' '}
-                <Thermometer
-                  theme="dark"
-                  value={ambientTemp}
-                  max="100"
-                  steps="10"
-                  format="°C"
-                  size="large"
-                  height="500"
-                />
+                <div className="Thermometer">
+                  <Thermometer
+                    theme="light"
+                    value={ambientTemp}
+                    max="50"
+                    steps="5"
+                    format="°C"
+                    size="large"
+                    height="450"
+                  />
+                </div>
                 <p style={{ paddingRight: '115px', paddingTop: '30px' }}>
                   {displayRiskOfIce()}
                 </p>

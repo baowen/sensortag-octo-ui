@@ -204,9 +204,6 @@ function App() {
                     height="500"
                   />
                 </div>
-                <p style={{ paddingRight: '205px', paddingTop: '30px' }}>
-                  {displayRiskOfIce()}
-                </p>
               </Col>
               <Col />
               <Col />

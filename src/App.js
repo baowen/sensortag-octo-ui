@@ -153,16 +153,18 @@ function App() {
             <Row>
               <Col>
                 {' '}
-                <SafeAccelerationGauge
-                  value={acceleration}
-                  width={400}
-                  height={320}
-                  max={10}
-                  drivingConditions={drivingConditions}
-                />
+                <div className="Gauge">
+                  <SafeAccelerationGauge
+                    value={acceleration}
+                    width={400}
+                    height={320}
+                    max={10}
+                    drivingConditions={drivingConditions}
+                  />
+                </div>
               </Col>
               <Col>
-                <div style={{ width: '80%', paddingLeft: '50px' }}>
+                <div className="Humidity">
                   <p>Humidity</p>
                   <CircularProgressbar
                     percentage={humidity}
@@ -172,15 +174,17 @@ function App() {
               </Col>
               <Col>
                 {' '}
-                <Thermometer
-                  theme="dark"
-                  value={ambientTemp}
-                  max="100"
-                  steps="10"
-                  format="°C"
-                  size="large"
-                  height="500"
-                />
+                <div className="Thermometer">
+                  <Thermometer
+                    theme="light"
+                    value={ambientTemp}
+                    max="100"
+                    steps="10"
+                    format="°C"
+                    size="large"
+                    height="500"
+                  />
+                </div>
                 <p style={{ paddingRight: '205px', paddingTop: '30px' }}>
                   {displayRiskOfIce()}
                 </p>
@@ -197,25 +201,7 @@ function App() {
             </Row>
           </Container>
 
-          <p>{displayConnectedMessage()}</p>
-          <p>
-            Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
-          </p>
-          <p>
-            Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
-            {magnetometerZ}
-          </p>
-          <p>
-            Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C
-          </p>
-          <p>
-            Humidity - temp: {temperature}°C, humidity: {humidity}%
-          </p>
           <p>{sensorId}</p>
-          <button onClick={() => handleConnection()}>
-            {connected && `End Connection`}
-            {!connected && `Start Connection`}
-          </button>
         </header>
       </div>
     </React.Fragment>

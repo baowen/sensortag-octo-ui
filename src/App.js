@@ -164,6 +164,15 @@ function App() {
                 </div>
               </Col>
               <Col>
+                <EventLogger
+                  objectTemp={objectTemp}
+                  acceleration={acceleration}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {' '}
                 <div className="Humidity">
                   <p>Humidity</p>
                   <CircularProgressbar
@@ -189,15 +198,8 @@ function App() {
                   {displayRiskOfIce()}
                 </p>
               </Col>
-            </Row>
-            <Row>
-              <Col>
-                <EventLogger
-                  objectTemp={objectTemp}
-                  acceleration={acceleration}
-                />
-              </Col>
-              <Col>Speed:</Col>
+              <Col />
+              <Col />
             </Row>
           </Container>
 

@@ -22,12 +22,13 @@
 .Thermometer {
   border: #fff;
   border-style: solid;
-  padding-left: 2em;
+  padding-left: 0.5em;
   padding-top: 0.5em;
   padding-bottom: 1em;
   color: #fff;
   background-color: #fff;
   border-radius: 25px;
+  margin: 50px;
 }
 
 .Gauge {
@@ -37,6 +38,8 @@
 
 .Humidity {
   width: '80%';
+  height: '80%';
+  margin: 10px;
   padding-left: '50px';
   background-color: #fff;
   border-radius: 25px;

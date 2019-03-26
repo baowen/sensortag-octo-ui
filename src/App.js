@@ -213,8 +213,6 @@ function App() {
               <Col />
             </Row>
           </Container>
-
-          <p>{sensorId}</p>
         </header>
       </div>
     </React.Fragment>

@@ -4,6 +4,7 @@ import Thermometer from 'react-thermometer-ecotropy';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import SafeAccelerationGauge from './SafeAccelerationGauge.js';
 import './App.css';
 
 const io = require('socket.io-client');
@@ -28,6 +29,7 @@ function App() {
   const [ambientTemp, setAmbientTemp] = useState(0);
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
+  const [acceleration, setAcceleration] = useState(0);
 
   let r = Math.floor(combinedAcceleration * 25.5);
   let g = Math.floor(255 - combinedAcceleration * 25.5);
@@ -85,14 +87,15 @@ function App() {
 
   useEffect(() => {
     socket.on('ACCELEROMETER_CHANGE', payload => {
-      setAccelerometerX(payload.x);
-      setAccelerometerY(payload.y);
-      setAccelerometerZ(payload.z);
-      setCombinedAcceleration(
-        getCombinedAcceleration(payload.x, payload.y, payload.z)
-      );
+      // setAccelerometerX(payload.x);
+      // setAccelerometerY(payload.y);
+      // setAccelerometerZ(payload.z);
+      setAcceleration(payload.car_acc);
+      // setCombinedAcceleration(
+      //   getCombinedAcceleration(payload.x, payload.y, payload.z)
+      // );
     });
-  }, [accelerometerX, accelerometerY, accelerometerZ, combinedAcceleration]); //only re-run the effect if new message comes in
+  }, [acceleration]); //only re-run the effect if new message comes in
 
   useEffect(() => {
     socket.on('GYROSCOPE_CHANGE', payload => {
@@ -150,13 +153,12 @@ function App() {
             <Row>
               <Col>
                 {' '}
-                <Gauge
-                  value={combinedAcceleration}
+                <SafeAccelerationGauge
+                  value={acceleration}
                   width={400}
                   height={320}
                   max={10}
-                  color={colorHex}
-                  label="Acceleration"
+                  drivingConditions="poor"
                 />
               </Col>
               <Col>Humidity: {humidity}%</Col>

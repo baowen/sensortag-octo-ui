@@ -11,9 +11,9 @@ export default function SafeAccelerationGauge(props) {
   var maxSafeAcceleration = 0;
   // Calculate safe levels of acceleration based on weather conditions
   if (props.drivingConditions === 'poor') {
-    maxSafeAcceleration = 5;
+    maxSafeAcceleration = 3;
   } else {
-    maxSafeAcceleration = 7;
+    maxSafeAcceleration = 5;
   }
 
   var safe = props.value > maxSafeAcceleration ? false : true;

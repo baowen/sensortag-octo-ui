@@ -199,11 +199,11 @@ function App() {
                   <Thermometer
                     theme="light"
                     value={ambientTemp}
-                    max="100"
-                    steps="10"
+                    max="50"
+                    steps="5"
                     format="°C"
                     size="large"
-                    height="500"
+                    height="400"
                   />
                 </div>
               </Col>

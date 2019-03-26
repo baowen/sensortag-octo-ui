@@ -6,6 +6,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import SafeAccelerationGauge from './SafeAccelerationGauge.js';
 import './App.css';
 
 const io = require('socket.io-client');
@@ -14,9 +15,6 @@ const socket = io('http://localhost:3000');
 function App() {
   const [connected, setConnection] = useState(false);
   const [sensorId, setSensorId] = useState('');
-  const [accelerometerX, setAccelerometerX] = useState(0);
-  const [accelerometerY, setAccelerometerY] = useState(0);
-  const [accelerometerZ, setAccelerometerZ] = useState(0);
   const [gyroscopeX, setGyroscopeX] = useState(0);
   const [gyroscopeY, setGyroscopeY] = useState(0);
   const [gyroscopeZ, setGyroscopeZ] = useState(0);
@@ -30,6 +28,7 @@ function App() {
   const [ambientTemp, setAmbientTemp] = useState(0);
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
+  const [acceleration, setAcceleration] = useState(0);
 
   let r = Math.floor(combinedAcceleration * 25.5);
   let g = Math.floor(255 - combinedAcceleration * 25.5);
@@ -87,14 +86,9 @@ function App() {
 
   useEffect(() => {
     socket.on('ACCELEROMETER_CHANGE', payload => {
-      setAccelerometerX(payload.x);
-      setAccelerometerY(payload.y);
-      setAccelerometerZ(payload.z);
-      setCombinedAcceleration(
-        getCombinedAcceleration(payload.x, payload.y, payload.z)
-      );
+      setAcceleration(payload.car_acc);
     });
-  }, [accelerometerX, accelerometerY, accelerometerZ, combinedAcceleration]); //only re-run the effect if new message comes in
+  }, [acceleration]); //only re-run the effect if new message comes in
 
   useEffect(() => {
     socket.on('GYROSCOPE_CHANGE', payload => {
@@ -152,13 +146,12 @@ function App() {
             <Row>
               <Col>
                 {' '}
-                <Gauge
-                  value={combinedAcceleration}
+                <SafeAccelerationGauge
+                  value={acceleration}
                   width={400}
                   height={320}
                   max={10}
-                  color={colorHex}
-                  label="Acceleration"
+                  drivingConditions="poor"
                 />
               </Col>
               <Col>
@@ -194,19 +187,11 @@ function App() {
 
           <p>{displayConnectedMessage()}</p>
           <p>
-            Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
-            {accelerometerZ}
-          </p>
-          <p>
             Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
           </p>
           <p>
             Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
             {magnetometerZ}
-          </p>
-          <p>
-            Combined Acceleration:
-            {combinedAcceleration}
           </p>
           <p>
             Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C

@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SafeAccelerationGauge from './SafeAccelerationGauge.js';
 import determineDrivingConditions from './determineDrivingConditions.js';
+import EventLogger from './EventLogger';
 import './App.css';
 
 const io = require('socket.io-client');
@@ -186,7 +187,12 @@ function App() {
               </Col>
             </Row>
             <Row>
-              <Col>Event logs:</Col>
+              <Col>
+                <EventLogger
+                  objectTemp={objectTemp}
+                  acceleration={acceleration}
+                />
+              </Col>
               <Col>Speed:</Col>
             </Row>
           </Container>

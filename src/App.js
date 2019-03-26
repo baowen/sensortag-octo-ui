@@ -184,7 +184,9 @@ function App() {
               <Col>
                 {' '}
                 <div className="Humidity">
-                  <p>Humidity</p>
+                  <Alert variant="info">
+                    <Alert.Heading>Humidity</Alert.Heading>
+                  </Alert>
                   <CircularProgressbar
                     percentage={humidity}
                     text={`${humidity}%`}
@@ -192,8 +194,10 @@ function App() {
                 </div>
               </Col>
               <Col>
-                {' '}
                 <div className="Thermometer">
+                  <Alert variant="info">
+                    <Alert.Heading>Temperature</Alert.Heading>
+                  </Alert>
                   <Thermometer
                     theme="light"
                     value={ambientTemp}

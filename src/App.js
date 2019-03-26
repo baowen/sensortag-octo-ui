@@ -4,6 +4,7 @@ import Thermometer from 'react-thermometer-ecotropy';
 import CircularProgressbar from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SafeAccelerationGauge from './SafeAccelerationGauge.js';
@@ -143,12 +144,21 @@ function App() {
     connected ? setConnection(false) : setConnection(true);
   };
 
+  console.log(drivingConditions);
+
   return (
     <React.Fragment>
       <div className="App">
         <header className="App-header">
           <br />
           <Container>
+            {drivingConditions === 'poor' ? (
+              <Alert key="alert" variant="danger">
+                Dangerous driving conditions detected!
+              </Alert>
+            ) : (
+              <div />
+            )}
             <Row>
               <Col>
                 {' '}

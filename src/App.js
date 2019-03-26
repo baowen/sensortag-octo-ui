@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Gauge from 'react-svg-gauge';
 import Thermometer from 'react-thermometer-ecotropy';
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -159,7 +161,15 @@ function App() {
                   label="Acceleration"
                 />
               </Col>
-              <Col>Humidity: {humidity}%</Col>
+              <Col>
+                <div style={{ width: '80%', paddingLeft: '50px' }}>
+                  <p>Humidity</p>
+                  <CircularProgressbar
+                    percentage={humidity}
+                    text={`${humidity}%`}
+                  />
+                </div>
+              </Col>
               <Col>
                 {' '}
                 <Thermometer
@@ -171,7 +181,7 @@ function App() {
                   size="large"
                   height="500"
                 />
-                <p style={{ paddingRight: '115px', paddingTop: '30px' }}>
+                <p style={{ paddingRight: '205px', paddingTop: '30px' }}>
                   {displayRiskOfIce()}
                 </p>
               </Col>

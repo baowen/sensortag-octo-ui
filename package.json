@@ -11,6 +11,7 @@
     "pretty-quick": "^1.10.0",
     "react": "^16.8.4",
     "react-bootstrap": "^1.0.0-beta.6",
+    "react-circular-progressbar": "^1.0.0",
     "react-dom": "^16.8.4",
     "react-error-boundary": "1.2.3",
     "react-scripts": "2.1.8",

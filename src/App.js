@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Gauge from 'react-svg-gauge';
-import Thermometer from 'react-thermometer-component';
+import Thermometer from 'react-thermometer-ecotropy';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -131,6 +131,12 @@ function App() {
     }
   }
 
+  function displayRiskOfIce() {
+    if (ambientTemp < 20) {
+      return 'Risk of ice';
+    }
+  }
+
   const handleConnection = () => {
     connected ? setConnection(false) : setConnection(true);
   };
@@ -139,6 +145,7 @@ function App() {
     <React.Fragment>
       <div className="App">
         <header className="App-header">
+          <br />
           <Container>
             <Row>
               <Col>
@@ -157,13 +164,16 @@ function App() {
                 {' '}
                 <Thermometer
                   theme="dark"
-                  value={objectTemp}
+                  value={ambientTemp}
                   max="100"
-                  steps="3"
+                  steps="10"
                   format="°C"
                   size="large"
-                  height="300"
+                  height="500"
                 />
+                <p style={{ paddingRight: '115px', paddingTop: '30px' }}>
+                  {displayRiskOfIce()}
+                </p>
               </Col>
             </Row>
             <Row>

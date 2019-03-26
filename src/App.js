@@ -145,8 +145,6 @@ function App() {
     connected ? setConnection(false) : setConnection(true);
   };
 
-  console.log(drivingConditions);
-
   return (
     <React.Fragment>
       <div className="App">

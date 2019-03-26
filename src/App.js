@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Gauge from 'react-svg-gauge';
 import Thermometer from 'react-thermometer-ecotropy';
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SafeAccelerationGauge from './SafeAccelerationGauge.js';
+import determineDrivingConditions from './determineDrivingConditions.js';
 import './App.css';
 
 const io = require('socket.io-client');
@@ -13,9 +16,6 @@ const socket = io('http://localhost:3000');
 function App() {
   const [connected, setConnection] = useState(false);
   const [sensorId, setSensorId] = useState('');
-  const [accelerometerX, setAccelerometerX] = useState(0);
-  const [accelerometerY, setAccelerometerY] = useState(0);
-  const [accelerometerZ, setAccelerometerZ] = useState(0);
   const [gyroscopeX, setGyroscopeX] = useState(0);
   const [gyroscopeY, setGyroscopeY] = useState(0);
   const [gyroscopeZ, setGyroscopeZ] = useState(0);
@@ -30,6 +30,7 @@ function App() {
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [acceleration, setAcceleration] = useState(0);
+  const [drivingConditions, setDrivingConditions] = useState(0);
 
   let r = Math.floor(combinedAcceleration * 25.5);
   let g = Math.floor(255 - combinedAcceleration * 25.5);
@@ -87,13 +88,7 @@ function App() {
 
   useEffect(() => {
     socket.on('ACCELEROMETER_CHANGE', payload => {
-      // setAccelerometerX(payload.x);
-      // setAccelerometerY(payload.y);
-      // setAccelerometerZ(payload.z);
       setAcceleration(payload.car_acc);
-      // setCombinedAcceleration(
-      //   getCombinedAcceleration(payload.x, payload.y, payload.z)
-      // );
     });
   }, [acceleration]); //only re-run the effect if new message comes in
 
@@ -127,6 +122,10 @@ function App() {
     });
   }, [temperature, humidity]); //only re-run the effect if new message comes in
 
+  useEffect(() => {
+    setDrivingConditions(determineDrivingConditions(ambientTemp));
+  }, [ambientTemp]);
+
   function displayConnectedMessage() {
     const connectedMessage = 'You have connected to the socket';
     if (connected) {
@@ -135,7 +134,7 @@ function App() {
   }
 
   function displayRiskOfIce() {
-    if (ambientTemp < 20) {
+    if (drivingConditions === 'poor') {
       return 'Risk of ice';
     }
   }
@@ -153,31 +152,35 @@ function App() {
             <Row>
               <Col>
                 {' '}
-                <div className="Gauge">
-                  <SafeAccelerationGauge
-                    value={acceleration}
-                    width={400}
-                    height={320}
-                    max={10}
-                    drivingConditions="poor"
+                <SafeAccelerationGauge
+                  value={acceleration}
+                  width={400}
+                  height={320}
+                  max={10}
+                  drivingConditions={drivingConditions}
+                />
+              </Col>
+              <Col>
+                <div style={{ width: '80%', paddingLeft: '50px' }}>
+                  <p>Humidity</p>
+                  <CircularProgressbar
+                    percentage={humidity}
+                    text={`${humidity}%`}
                   />
                 </div>
               </Col>
-              <Col>Humidity: {humidity}%</Col>
               <Col>
                 {' '}
-                <div className="Thermometer">
-                  <Thermometer
-                    theme="light"
-                    value={ambientTemp}
-                    max="50"
-                    steps="5"
-                    format="°C"
-                    size="large"
-                    height="450"
-                  />
-                </div>
-                <p style={{ paddingRight: '115px', paddingTop: '30px' }}>
+                <Thermometer
+                  theme="dark"
+                  value={ambientTemp}
+                  max="100"
+                  steps="10"
+                  format="°C"
+                  size="large"
+                  height="500"
+                />
+                <p style={{ paddingRight: '205px', paddingTop: '30px' }}>
                   {displayRiskOfIce()}
                 </p>
               </Col>
@@ -190,19 +193,11 @@ function App() {
 
           <p>{displayConnectedMessage()}</p>
           <p>
-            Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
-            {accelerometerZ}
-          </p>
-          <p>
             Gyroscope - x: {gyroscopeX}, y: {gyroscopeY}, z: {gyroscopeZ}
           </p>
           <p>
             Magnetometer - x: {magnetometerX}, y: {magnetometerY}, z:{' '}
             {magnetometerZ}
-          </p>
-          <p>
-            Combined Acceleration:
-            {combinedAcceleration}
           </p>
           <p>
             Temp - obj: {objectTemp}°C, ambient: {ambientTemp}°C

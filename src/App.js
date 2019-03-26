@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import bluecar from './BlueCar.png';
 import Gauge from 'react-svg-gauge';
+import Thermometer from 'react-thermometer-component';
 
 import './App.css';
 
@@ -147,15 +148,17 @@ function App() {
             label="Acceleration"
           />
         </div>
-        <img
-          src={bluecar}
-          style={{
-            width: '15%',
-            height: '15%',
-          }}
-          className="App-logo"
-          alt="logo"
-        />
+        <div>
+          <Thermometer
+            theme="dark"
+            value={objectTemp}
+            max="100"
+            steps="3"
+            format="°C"
+            size="large"
+            height="300"
+          />
+        </div>
         <p>{displayConnectedMessage()}</p>
         <p>
           Accelerometer - x: {accelerometerX}, y: {accelerometerY}, z:
